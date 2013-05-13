@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" xmlns:components="com.adobe.sync.components.*" xmlns:qrcode="org.qrcode.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.adobe.sync.events.SyncSwfEvent;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.utils.Base64Encoder;
+			
+			[Bindable] private var bitmap:Bitmap;
+			[Bindable] private var language:String;
+			private var dataURI:String;
+			
+			protected function onCaughtUp(event:SyncSwfEvent):void
+			{
+				language = syncConnector.language;
+				qr.encode(syncConnector.url);
+				bitmap = new Bitmap(qr.bitmapData);
+				var bytes:ByteArray = new PNGEncoder().encode(qr.bitmapData);
+				var base64:Base64Encoder = new Base64Encoder();
+				base64.encodeBytes(bytes);
+				dataURI = "data:image/png;base64,"+base64;
+			}
+			
+			protected function onClick(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest(dataURI));
+			}
+			
+			private function getTip(language:String):String
+			{
+				switch(language) {
+					case "fr":
+						return "Cliquez sur l'image pour l'ouvrir dans un navigateur";
+						break;
+					default:
+						return "Click image to open it in a web browser";
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Image source="{bitmap}" click="onClick(event)" buttonMode="{bitmap!=null}" toolTip="{getTip(language)}"/>
+	<components:SyncConnector id="syncConnector" caughtUp="onCaughtUp(event)"/>
+	<qrcode:QRCode id="qr"/>
+	
+</mx:Application>

@@ -1,7 +1,6 @@
-connect
+Projects related to Adobe Connect
 =======
 
-Projects related to Adobe Connect
 
 ConnectQR
 -------

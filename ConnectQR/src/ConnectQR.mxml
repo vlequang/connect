@@ -2,49 +2,44 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
 				xmlns:components="com.adobe.sync.components.*" 
 				xmlns:qrcode="org.qrcode.*"
-				layout="vertical" >
+				layout="vertical" addedToStage="init(event)">
 	
 	<mx:Script>
 		<![CDATA[
-/****************************************************
- * CONNECT QR Custom Pod
- * 
- * This custom pod can be shared in a meeting room to display the QR code to the meeting URL.
- * You can click on the image to open it in a web browser. This can be used with mobile devices
- * to instantly join meetings in Adobe Connect Mobile.
- * 
- * Source used: https://github.com/jbpin/as3-qrcode-encoder (MIT License)
- * 
- * Copyright (c) 2013 Vincent Le Quang
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
- ***************************************************/
-			
 			import com.adobe.sync.events.SyncSwfEvent;
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.Base64Encoder;
 			
 			[Bindable] private var bitmap:Bitmap;
-			[Bindable] private var language:String;
+			[Bindable] private var language:String = Capabilities.language;
 			private var dataURI:String;
+
+			/****************************************************
+			 * function init
+			 * Initialize. If we passed a parameter url=<url>, this value will be used as the QR code.
+			 */
+			protected function init(event:Event):void
+			{
+				if(loaderInfo.parameters.url) {
+					setQR(loaderInfo.parameters.url);
+				}
+			}
+
+			/****************************************************
+			 * function setQR
+			 * Sets the QR code
+			 */
+			private function setQR(url:String):void {
+				// encode QR code image
+				qr.encode(url);
+				bitmap = new Bitmap(qr.bitmapData);
+				
+				//	get data-uri of QR code image
+				var bytes:ByteArray = new PNGEncoder().encode(qr.bitmapData);
+				var base64:Base64Encoder = new Base64Encoder();
+				base64.encodeBytes(bytes);
+				dataURI = "data:image/png;base64,"+base64;
+			}
 			
 			/****************************************************
 			 * function onCaughtUp
@@ -53,15 +48,7 @@
 			protected function onCaughtUp(event:SyncSwfEvent):void
 			{
 				language = syncConnector.language;
-				// encode QR code image
-				qr.encode(syncConnector.url);
-				bitmap = new Bitmap(qr.bitmapData);
-				
-				//	get data-uri of QR code image
-				var bytes:ByteArray = new PNGEncoder().encode(qr.bitmapData);
-				var base64:Base64Encoder = new Base64Encoder();
-				base64.encodeBytes(bytes);
-				dataURI = "data:image/png;base64,"+base64;
+				setQR(syncConnector.url);
 			}
 			
 			/****************************************************

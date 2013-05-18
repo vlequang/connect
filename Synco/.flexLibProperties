@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.synco.utils.SyncoUtil"/>
+    <classEntry path="com.synco.interfaces.ISender"/>
+    <classEntry path="com.synco.script.Result"/>
+    <classEntry path="com.synco.result.ListMemberResult"/>
+    <classEntry path="com.synco.interfaces.ISynco"/>
+    <classEntry path="com.synco.result.ArrayResult"/>
+    <classEntry path="com.synco.script.Sequence"/>
+    <classEntry path="com.synco.interfaces.ISequence"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

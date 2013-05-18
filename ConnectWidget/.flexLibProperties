@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.adobe.connect.widget.Connector"/>
+    <classEntry path="com.adobe.connect.widget.events.ConnectorEvent"/>
+    <classEntry path="com.adobe.connect.widget.chat.ChatModule"/>
+    <classEntry path="com.adobe.connect.widget.chat.IChatReceiver"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

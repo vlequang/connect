@@ -7,12 +7,16 @@ package com.adobe.connect.widget.chat
 	import com.synco.result.ArrayResult;
 	import com.synco.result.DataResult;
 	import com.synco.script.Sequence;
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 
-	public class ChatModule
+	public class ChatModule extends EventDispatcher
 	{
-		
+		private var connected:Boolean;
 		private var chatObj:IMeetingObject;
 		private var history:Array;
+		private var _typing:Boolean;
 		private var receivers:Vector.<IChatReceiver> = new Vector.<IChatReceiver>();
 		
 		public function ChatModule(liveRoom:LiveRoom)
@@ -34,6 +38,8 @@ package com.adobe.connect.widget.chat
 				function(result:DataResult):void {
 					history = result.data.history;
 					receiveHistory(history);
+					connected = true;
+					dispatchEvent(new Event(Event.CONNECT));
 				}
 			);
 			/*,
@@ -82,6 +88,33 @@ package com.adobe.connect.widget.chat
 				for each(var message:Object in history) {
 					receiver.receiveMessage(message);
 				}
+			}
+		}
+		
+		private function waitForConnection(args:Array):Boolean {
+			if(connected) {
+				return false;
+			}
+			addEventListener(Event.CONNECT,
+				function(e:Event):void {
+					e.currentTarget.removeEventListener(e.type,arguments.callee);
+					args.callee.apply(null,args);
+				});
+			return true;
+		}
+		
+		public function sendMessage(message:String):void {
+			if(waitForConnection(arguments))
+				return;
+			chatObj.serverCall("sendMessage",[0,message,-1,'Black',-1]);
+		}
+		
+		public function set typing(value:Boolean):void {
+			if(waitForConnection(arguments))
+				return;
+			if(_typing!=value) {
+				_typing = value;
+				chatObj.serverCall("setTypingStatus",[true]);
 			}
 		}
 	}

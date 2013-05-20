@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="modules/JavascriptPod.as" projectUUID="43648e77-d70b-42ff-ac67-29dd961e6345" version="11">
+<actionScriptProperties analytics="false" mainApplicationPath="test/Test_sharedobject.as" projectUUID="43648e77-d70b-42ff-ac67-29dd961e6345" version="11">
   <compiler additionalCompilerArguments="-locale en_US" advancedTelemetry="false" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="false" htmlPlayerVersionCheck="false" includeNetmonSwc="false" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
@@ -17,13 +17,13 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/spark.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/sparkskins.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/rpc.swc" useDefaultLinkType="false"/>
-          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/videoPlayer.swc" useDefaultLinkType="false"/>
-          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/qtp_air.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/datavisualization.swc" useDefaultLinkType="false"/>
+          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/qtp_air.swc" useDefaultLinkType="false"/>
+          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/videoPlayer.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/spark_dmv.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation.swc" useDefaultLinkType="false"/>
-          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/flash-integration.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_dmv.swc" useDefaultLinkType="false"/>
+          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/flash-integration.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_flashflexkit.swc" useDefaultLinkType="false"/>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_agent.swc" useDefaultLinkType="false"/>
         </excludedEntries>
@@ -36,13 +36,12 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="test/Test_aicc.as"/>
     <application path="test/Test_webcambroadcasting.as"/>
     <application path="test/Test25_polls.as"/>
     <application path="test/Test1_login.as"/>
     <application path="test/Test23_connectcore.as"/>
-    <application path="test/Test_recording.as"/>
     <application path="modules/ScreenSharePod.as"/>
+    <application path="test/Test_recording.as"/>
     <application path="test/Test2_guest.as"/>
     <application path="test/Test9_structured_sequence.as"/>
     <application path="test/Test15_whiteboard.as"/>
@@ -50,25 +49,27 @@
     <application path="test/Test7_QandA.as"/>
     <application path="test/Test17_screenshare.as"/>
     <application path="test/Test5_pods.as"/>
+    <application path="test/Test_sharedobject.as"/>
     <application path="test/Test14_video.as"/>
     <application path="test/Test21_presentershare.as"/>
-    <application path="test/Test8_clear_chat_and_QnA.as"/>
     <application path="test/Test10_javascript.as"/>
+    <application path="test/Test8_clear_chat_and_QnA.as"/>
     <application path="test/Test_webcamrecording.as"/>
     <application path="test/Test6_chat.as"/>
     <application path="test/Test16_layout.as"/>
     <application path="test/Test13_upload.as"/>
     <application path="test/Test4_room.as"/>
-    <application path="test/Test3_listroom.as"/>
     <application path="test/Test12_javascript_interface.as"/>
+    <application path="test/Test3_listroom.as"/>
     <application path="test/Test20_pdfshare.as"/>
     <application path="modules/JavascriptPod.as"/>
-    <application path="test/Test19_imageshare.as"/>
     <application path="test/Test22_unifiedvoice.as"/>
+    <application path="test/Test19_imageshare.as"/>
+    <application path="test/Test_aicc.as"/>
     <application path="modules/VideoPod.as"/>
     <application path="test/Test24_attendees.as"/>
-    <application path="test/Test_playback.as"/>
     <application path="test/Test18_syncosequencer.as"/>
+    <application path="test/Test_playback.as"/>
   </applications>
   <modules/>
   <workers/>

@@ -24,13 +24,17 @@ package test
 	import test.common.Test;
 	
 //	[SWF(backgroundColor="0x000000" , width="1024" , height="768")]
-	public class Test19_imageshare extends Test
+	public class Test_imageshare extends Test
 	{
 		private var videoContainer:Sprite = new Sprite();
 		private static const VIDEO_WIDTH:int = 320,VIDEO_HEIGHT:int = 240;
 		
-		public function Test19_imageshare()
+		public function Test_imageshare()
 		{
+			description = "View a shared image in the share pod";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var room:LiveRoom;
 			var sequence:Sequence = new Sequence();

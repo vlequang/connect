@@ -24,6 +24,10 @@ package test
 		
 		public function Test_recording()
 		{
+			description = "Start/Pause/Stop recording a meeting.";
+		}
+		
+		override protected function init():void {
 			var room:LiveRoom;
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();

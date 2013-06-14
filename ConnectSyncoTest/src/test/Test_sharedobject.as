@@ -19,6 +19,10 @@ package test
 	{
 		public function Test_sharedobject()
 		{
+			description = "Use a custom shared object in a room";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var room:LiveRoom;
 			var sequence:Sequence = new Sequence();

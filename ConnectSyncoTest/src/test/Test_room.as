@@ -12,10 +12,14 @@ package test
 	
 	import test.common.Test;
 
-	public class Test4_room extends Test
+	public class Test_room extends Test
 	{
-		public function Test4_room()
+		public function Test_room()
 		{
+			description = "Enter a room";
+		}
+		
+		override protected function init():void {
 			var room:LiveRoom;
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();

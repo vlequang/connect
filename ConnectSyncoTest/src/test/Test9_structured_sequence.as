@@ -22,6 +22,9 @@ package test
 		
 		public function Test9_structured_sequence()
 		{
+		}
+		
+		override protected function init():void {
 			initialize_sequences();
 			
 			var sequence:Sequence = new Sequence();

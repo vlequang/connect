@@ -29,15 +29,21 @@ package test
 	public class Test_webcamrecording extends Test
 	{
 		private var recordingObject:IMeetingObject;
+		private var room:LiveRoom;
+		private var videoObject:IMeetingObject;
 		
 		public function Test_webcamrecording()
 		{
+			description = "Broadcast and record from a webcam";
+		}
+		
+		override protected function init():void {
 			var videoPodID:String;
-			var room:LiveRoom;
 			var connect:Connect;
 			var camera:Camera;
 			var microphone:Microphone = Microphone.getEnhancedMicrophone();
 			var sequence:Sequence = new Sequence();
+			var videoStream:IMeetingStream;
 			
 			camera = Camera.getCamera(""+(Camera.names.length-1));
 			camera.setMode(320,240,10);
@@ -99,11 +105,11 @@ package test
 					room.fetchMeetingObject(videoPodID,PodType.VIDEO,null,sequence.next);
 				},
 				function(result:MeetingObjectResult):void {
-					var videoObject:IMeetingObject = result.meetingObject;
+					videoObject = result.meetingObject;
 					room.fetchMeetingStream(videoObject.data[room.userID].streamId,LiveStream.PUBLISH,sequence.next);
 				},
 				function(result:MeetingStreamResult):void {
-					var videoStream:IMeetingStream= result.stream;
+					videoStream = result.stream;
 					if(videoStream.stream) {
 						videoStream.stream.receiveAudio(false);
 						videoStream.stream.receiveVideo(false);
@@ -142,10 +148,14 @@ package test
 				},
 				function(result:Result):void {
 					trace(sequence.step,"done");
-					validate(result.success);
+					videoStream.stream.attachCamera(null);
+					videoStream.close();
+					removeChild(video);
+					validate();
 				}
 			);
 		}
+		
 		
 		private function recordSync(event:SyncEvent):void
 		{

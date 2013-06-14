@@ -12,6 +12,7 @@ package test
 	import com.synco.result.DataResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
+	import com.synco.utils.SyncoUtil;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -29,7 +30,7 @@ package test
 	import test.common.Test;
 	
 	[SWF(backgroundColor="0xcccccc" , width="1024" , height="768")]
-	public class Test20_pdfshare extends Test
+	public class Test_pdfshare extends Test
 	{
 		private var pdfContainer:Sprite = new Sprite();
 		private var loaders:Array = [];
@@ -39,12 +40,18 @@ package test
 		private var contentPath:String;
 		private var loaderCount:int= 0;
 		
-		public function Test20_pdfshare()
+		public function Test_pdfshare()
 		{
+			description = "View a PDF shared in the Share Pod";
+		}
+		
+		override protected function init():void {
 			var room:LiveRoom;
 			var sequence:Sequence = new Sequence();
 			var activeLayout:Object;
 			var ctID:String;
+			var index:int=0;
+			var array:Array;
 			sequence.run(
 				function():void {
 					trace(sequence.step,"fetch connect");
@@ -66,7 +73,16 @@ package test
 					room.fetchActiveSharePods("document",sequence.next);
 				},
 				function(result:ArrayResult):void {
-					room.fetchContent(result.array[0],sequence.next);
+					array = result.array;
+					sequence.next();
+				},
+				function():void {
+					if(index<array.length)
+						room.fetchContent(array[index],sequence.next);
+					else {
+						trace("No pdf found");
+						validate(false);
+					}
 				},
 				function(result:DataResult):void {
 					trace(JSON.stringify(result.data,null,'\t'));
@@ -77,6 +93,11 @@ package test
 						var loader:URLLoader = new URLLoader();
 						loader.addEventListener(Event.COMPLETE,sequence.next);
 						loader.load(new URLRequest(url));
+					}
+					else {
+						index++;
+						sequence.jump(-1);
+						SyncoUtil.callAsync(sequence.next);
 					}
 				},
 				function(e:Event):void {

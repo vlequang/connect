@@ -13,17 +13,22 @@ package test
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	
+	import flash.events.MouseEvent;
 	import flash.events.SyncEvent;
 	
 	import test.common.Test;
 	
-	public class Test22_unifiedvoice extends Test
+	public class Test_unifiedvoice extends Test
 	{
 		private var audioObject:IMeetingObject;
 		private var liveRoom:LiveRoom, audioStream:IMeetingStream;
 		private var audioStreamId:String;
-		public function Test22_unifiedvoice()
+		public function Test_unifiedvoice()
 		{
+			description = "Listen to unified voice";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
 			sequence.run(
@@ -54,6 +59,11 @@ package test
 				function(result:MeetingObjectResult):void {
 					audioObject = result.meetingObject;
 					audioObject.sync = onAudioSync;
+					trace("Click to stop audio");
+					addEventListener(MouseEvent.CLICK,sequence.next);
+				},
+				function():void {
+					liveRoom.leave();
 				}
 			);
 		}

@@ -1,23 +1,30 @@
 package test
 {
 	import com.adobe.connect.synco.core.Connect;
+	import com.adobe.connect.synco.core.PodType;
+	import com.adobe.connect.synco.interfaces.IMeetingObject;
 	import com.adobe.connect.synco.live.LiveRoom;
 	import com.adobe.connect.synco.results.ConnectResult;
+	import com.adobe.connect.synco.results.MeetingObjectResult;
 	import com.adobe.connect.synco.results.SessionResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	
-	import flash.utils.getTimer;
-	
 	import test.common.Test;
 	
-	public class Test2_guest extends Test
+	public class Test_attendees extends Test
 	{
-		public function Test2_guest()
+		public function Test_attendees()
 		{
-			var room:LiveRoom;
+			description = "Retrieve attendee list";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
+			var room:LiveRoom;
 			var sequence:Sequence = new Sequence();
+			var attendees:IMeetingObject;
+			var activeLayout:Object;
 			sequence.run(
 				function():void {
 					trace(sequence.step,"fetch connect");
@@ -31,22 +38,23 @@ package test
 				},
 				function(result:SessionResult):void {
 					trace(sequence.step,"Session:",result.sessionID);
+					trace(sequence.step,"login");
+					connect.session.login(username,password,null,sequence.next);
+				},
+				function(result:Result):void {
 					trace(sequence.step,"Enter room");
 					room = connect.getRoom(meetingroom);
 					room.enter(sequence.next);
 				},
 				function(result:Result):void {
-					room.enterAsGuest(guestname,sequence.next);
-					trace(sequence.step,"Loging in as guest");
-				},
-				function(result:Result):void {
-					validate(result.success);
 					trace(sequence.step,"Connected to",room.netConnection.uri);
-					trace(sequence.step,"logout");
-					connect.session.logout(null,sequence.next);
+					room.fetchMeetingObject(null,PodType.ATTENDEES,null,sequence.next);
 				},
-				function(result:Result):void {
-					validate(result.success);
+				function(result:MeetingObjectResult):void {
+					attendees = result.meetingObject;
+					trace(sequence.step,JSON.stringify(attendees.data,null,"\t"));
+					trace(sequence.step,"Self info:");
+					trace(sequence.step,JSON.stringify(attendees.data[room.userID],null,'\t'));
 					trace(sequence.step,"done");
 					validate();
 				}

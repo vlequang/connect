@@ -26,7 +26,7 @@ package test
 	
 	import test.common.Test;
 	
-	public class Test15_whiteboard extends Test
+	public class Test_whiteboard extends Test
 	{
 		private var overlay:Sprite = new Sprite();
 		private var whiteboardObj:IMeetingObject;
@@ -34,8 +34,12 @@ package test
 		private var nativeWidth:int, nativeHeight:int;
 		private var graphicShapes:Object = {};
 		
-		public function Test15_whiteboard()
+		public function Test_whiteboard()
 		{
+			description = "View whiteboard";
+		}
+		
+		override protected function init():void {
 			overlay.mouseChildren = overlay.mouseEnabled = false;
 			var sequence:Sequence = new Sequence();
 			var connect:Connect;
@@ -158,29 +162,16 @@ package test
 			var sequence:Sequence = new Sequence();
 			sequence.run(
 				function():void {
-					room.fetchActivePods("FtContent",sequence.next);
+					room.fetchActiveSharePods("wb",sequence.next);
 				},
 				function(result:ArrayResult):void {
-					idsToTry = result.array;
-					sequence.next();
-				},
-				function():void {
-					if(!idsToTry.length) {
-						callback(new DataResult(null));
-						return;
-					}
-					id = idsToTry.pop();
-					room.fetchContent(id,sequence.next);
-				},
+					id = result.array[0];
+					room.fetchContent(result.array[0],sequence.next);
+				},				
 				function(result:DataResult):void {
+					trace(JSON.stringify(result.data,null,'\t'));
 					var info:Object = result.data;
-					if(!info || info.shareType!="wb") {
-						sequence.jump(-1);
-						SyncoUtil.callAsync(sequence.next);
-					}
-					else {
-						callback(new DataResult(id));
-					}
+					callback(new DataResult(id));
 				}
 			);
 		}

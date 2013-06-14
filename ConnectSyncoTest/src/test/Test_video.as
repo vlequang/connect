@@ -17,22 +17,28 @@ package test
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.events.SyncEvent;
 	import flash.geom.Point;
 	import flash.media.Video;
 	
 	import test.common.Test;
 	
-	public class Test14_video extends Test
+	public class Test_video extends Test
 	{
 		private static const VIDEO_WIDTH:int = 320,VIDEO_HEIGHT:int = 240;
 		private var room:LiveRoom;
 		private var videoStream:IMeetingStream;
 		private var videoObject:IMeetingObject;
 		private var netStreams:Object ={};
-		private var videoContainer:Sprite = new Sprite();
-		public function Test14_video()
+		private var videoContainer = new Sprite();
+		public function Test_video()
 		{
+			description = "View video pod";
+		}
+		
+		override protected function init():void {
+			
 			addChild(videoContainer);
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
@@ -86,6 +92,12 @@ package test
 				function(result:MeetingObjectResult):void {
 					videoObject = result.meetingObject;
 					videoObject.sync = onSync;
+					addEventListener(MouseEvent.CLICK,sequence.next);
+				},
+				function(e:MouseEvent):void {
+					videoStream.close();
+					removeChild(videoContainer);
+					validate();
 				}
 			);
 		}

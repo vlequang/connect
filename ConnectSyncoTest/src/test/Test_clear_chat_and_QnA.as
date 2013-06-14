@@ -14,14 +14,18 @@ package test
 	
 	import test.common.Test;
 
-	public class Test8_clear_chat_and_QnA extends Test
+	public class Test_clear_chat_and_QnA extends Test
 	{
 		private var chat_sequence:Sequence;
 		private var qna_sequence:Sequence;
 		private var connect:Connect;
 		
-		public function Test8_clear_chat_and_QnA()
+		public function Test_clear_chat_and_QnA()
 		{
+			description = "Clear the chat pod and Q&A pod";
+		}
+		
+		override protected function init():void {
 			initialize_sequences();
 			
 			var sequence:Sequence = new Sequence();

@@ -1,60 +1,58 @@
 package test
 {
 	import com.adobe.connect.synco.core.Connect;
+	import com.adobe.connect.synco.live.LiveRoom;
 	import com.adobe.connect.synco.results.ConnectResult;
+	import com.adobe.connect.synco.results.RoomsResult;
 	import com.adobe.connect.synco.results.SessionResult;
-	import com.adobe.connect.synco.results.UserResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	
 	import test.common.Test;
-	
-	public class Test1_login extends Test
+
+	public class Test_listroom extends Test
 	{
-		public function Test1_login()
+		public function Test_listroom()
 		{
-			var sequence:Sequence = new Sequence();
+			description = "Lists all the rooms on the server.";
+		}
+		
+		override protected function init():void {
+			var room:LiveRoom;
 			var connect:Connect;
+			var sequence:Sequence = new Sequence();
 			sequence.run(
 				function():void {
 					trace(sequence.step,"fetch connect");
 					Connect.fetchConnect(domain,null,sequence.next);
 				},
 				function(result:ConnectResult):void {
-					validate(result.success,result.version);
 					trace(sequence.step,"Connect Version:",result.version);
 					connect = result.connect;
 					trace(sequence.step,"check session");
 					connect.session.fetchSession(sequence.next);
 				},
 				function(result:SessionResult):void {
-					validate(result.success,result.sessionID);
 					trace(sequence.step,"Session:",result.sessionID);
-					trace(sequence.step,"check user");
-					connect.session.fetchUser(sequence.next);
-				},
-				function(result:UserResult):void {
-					trace(sequence.step,"User:",JSON.stringify(result.user));
-					trace(sequence.step,"login");
+					trace(sequence.step,"Login");
 					connect.session.login(username,password,null,sequence.next);
 				},
 				function(result:Result):void {
-					trace(sequence.step,"check user");
-					connect.session.fetchUser(sequence.next);
+					trace(sequence.step,"List room");
+					connect.listRooms(sequence.next);
 				},
-				function(result:UserResult):void {
-					validate(result.success,result.user);
-					trace(sequence.step,JSON.stringify(result.user));
+				function(result:RoomsResult):void {
+					trace(sequence.step,"Rooms:"+JSON.stringify(result.rooms,null,"\t"));
+					room = connect.getRoom(meetingroom);
+					room.enter(sequence.next);
+				},
+				function(result:Result):void {
+					trace(sequence.step,"Connected to",room.netConnection.uri);
 					trace(sequence.step,"logout");
 					connect.session.logout(null,sequence.next);
 				},
-				function(result:Result):void{
-					trace(sequence.step,"check user");
-					connect.session.fetchUser(sequence.next);
-				},
-				function(result:UserResult):void {
-					validate(!result.user);
-					trace(sequence.step,"User:",JSON.stringify(result.user));
+				function(result:Result):void {
+					validate(result.success);
 					trace(sequence.step,"done");
 					validate();
 				}

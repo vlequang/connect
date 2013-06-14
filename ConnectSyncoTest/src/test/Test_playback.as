@@ -26,10 +26,14 @@ package test
 		private var videoContainer:Sprite = new Sprite();
 		public function Test_playback()
 		{
+			description = "Replay a meeting";
+		}
+		
+		override protected function init():void {
 			addChild(videoContainer);
 			
-			meetingroom = "p3gfyzgek73";
-			
+			meetingroom = "p16wz2x0lnw";
+//https://my.adobeconnect.com/fieldenablement/			
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
 			sequence.run(

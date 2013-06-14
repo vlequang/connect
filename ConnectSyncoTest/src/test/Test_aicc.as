@@ -26,9 +26,10 @@ package test
 	{
 		public function Test_aicc()
 		{
-			password = "breeze9";
-			domain = "http://mobile.adobe.acrobat.com";
-			meetingroom = "vcbyminh";
+			setParameters("mobile.adobe.acrobat.com","vcbyminh","vlequang@adobe.com","breeze9");
+		}
+		
+		override protected function init():void {
 			
 			var room:LiveRoom;
 			var connect:Connect;

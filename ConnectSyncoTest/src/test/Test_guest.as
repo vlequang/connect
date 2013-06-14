@@ -3,17 +3,22 @@ package test
 	import com.adobe.connect.synco.core.Connect;
 	import com.adobe.connect.synco.live.LiveRoom;
 	import com.adobe.connect.synco.results.ConnectResult;
-	import com.adobe.connect.synco.results.RoomsResult;
 	import com.adobe.connect.synco.results.SessionResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	
+	import flash.utils.getTimer;
+	
 	import test.common.Test;
-
-	public class Test3_listroom extends Test
+	
+	public class Test_guest extends Test
 	{
-		public function Test3_listroom()
+		public function Test_guest()
 		{
+			description = "Enter a room as a guest";
+		}
+		
+		override protected function init():void {
 			var room:LiveRoom;
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
@@ -30,19 +35,16 @@ package test
 				},
 				function(result:SessionResult):void {
 					trace(sequence.step,"Session:",result.sessionID);
-					trace(sequence.step,"Login");
-					connect.session.login(username,password,null,sequence.next);
-				},
-				function(result:Result):void {
-					trace(sequence.step,"List room");
-					connect.listRooms(sequence.next);
-				},
-				function(result:RoomsResult):void {
-					trace(sequence.step,"Rooms:"+JSON.stringify(result.rooms,null,"\t"));
+					trace(sequence.step,"Enter room");
 					room = connect.getRoom(meetingroom);
 					room.enter(sequence.next);
 				},
 				function(result:Result):void {
+					room.enterAsGuest(guestname,sequence.next);
+					trace(sequence.step,"Loging in as guest");
+				},
+				function(result:Result):void {
+					validate(result.success);
 					trace(sequence.step,"Connected to",room.netConnection.uri);
 					trace(sequence.step,"logout");
 					connect.session.logout(null,sequence.next);

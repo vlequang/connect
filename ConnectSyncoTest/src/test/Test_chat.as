@@ -7,21 +7,28 @@ package test
 	import com.adobe.connect.synco.results.ConnectResult;
 	import com.adobe.connect.synco.results.MeetingObjectResult;
 	import com.adobe.connect.synco.results.SessionResult;
+	import com.synco.result.ArrayResult;
 	import com.synco.result.DataResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	
 	import test.common.Test;
-
-	public class Test7_QandA extends Test
+	
+	public class Test_chat extends Test
 	{
-		public function Test7_QandA()
+		public function Test_chat()
 		{
+			description = "Receive and send chat mesages.";
+		}
+		
+		override protected function init():void {
 			var room:LiveRoom;
 			var podsObj:IMeetingObject;
-			var qnaObj:IMeetingObject;
+			var chatObj:IMeetingObject;
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
+			var layoutObject:IMeetingObject;
+			var activeLayout:Object;
 			sequence.run(
 				function():void {
 					trace(sequence.step,"fetch connect");
@@ -39,49 +46,58 @@ package test
 					connect.session.login(username,password,null,sequence.next);
 				},
 				function(result:Result):void {
-					trace("Login:",JSON.stringify(result));
-					if(!result.success)
-						return;
 					trace(sequence.step,"enter room");
 					room = connect.getRoom(meetingroom);
 					room.enter(sequence.next);
 				},
 				function(result:Result):void {
 					trace(sequence.step,"Connected to",room.netConnection.uri);
-					room.fetchMeetingObject(null,PodType.PODS,null,sequence.next);
+					trace(sequence.step,"Get Chat pod");
+					room.fetchActivePods("FtChat",sequence.next);
+				},
+				function(result:ArrayResult):void {
+					var chatPodID:String = result.array[0];
+					room.fetchMeetingObject(chatPodID,PodType.CHATMESSAGES,null,sequence.next);
 				},
 				function(result:MeetingObjectResult):void {
-					podsObj = result.meetingObject;
-					trace(sequence.step,"Get Q&A pod");
-					var qnaPodID:String;
-					for(var id:String in podsObj.data) {
-						if(podsObj.data[id].type=="QandA") {
-							qnaPodID = id;
-						}
-					}
-					room.fetchMeetingObject(qnaPodID,PodType.CHATMESSAGES,null,sequence.next);
-				},
-				function(result:MeetingObjectResult):void {
-					qnaObj = result.meetingObject;
+					chatObj = result.meetingObject;
 					trace(sequence.step,"Register message events");
-					trace(sequence.step,"Get Q&A history");
-					qnaObj.serverCall("getHistory",[],sequence.next);
+					chatObj.addCallback("message",receiveMessage);
+					chatObj.addCallback("clearHistory",clearHistory);
+					trace(sequence.step,"Get chat history");
+					chatObj.serverCall("getHistory",[],sequence.next);
 				},
 				function(result:DataResult):void {
 					trace(sequence.step,JSON.stringify(result.data,null,'\t'));
-					trace(sequence.step,"Delete all questions");
-					qnaObj.serverCall("onDeleteAllQuestions",[],sequence.next);
+					trace(sequence.step,"Clear chat");
+					chatObj.serverCall("clearHistory",[],sequence.next);
 				},
 				function(result:Result):void {
-					trace(sequence.step,"Get Q&A history");
-					qnaObj.serverCall("getHistory",[],sequence.next);
+					trace(sequence.step,"Get chat history");
+					chatObj.serverCall("getHistory",[],sequence.next);
 				},
 				function(result:DataResult):void {
 					trace(sequence.step,JSON.stringify(result.data,null,'\t'));
+					trace(sequence.step,"Type message");
+					chatObj.serverCall("setTypingStatus",[true],sequence.next);
+				},
+				function(result:Result):void {
+					trace(sequence.step,"Send a message");
+					chatObj.serverCall("sendMessage",[0,"Hello, now it's "+new Date(),-1,'Black',-1],sequence.next);
+				},
+				function(result:Result):void {
 					trace("Done");
 					validate();
 				}
 			);
+		}
+		
+		private function clearHistory():void {
+			trace(">> clearHistory");
+		}
+		
+		private function receiveMessage(msg:Object):void {
+			trace(">> receiveMessage:", JSON.stringify(msg,null,'\t'));
 		}
 	}
 }

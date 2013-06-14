@@ -16,12 +16,16 @@ package test
 	import test.common.Test;
 	
 	[SWF(width="800", height="600"]
-	public class Test25_polls extends Test
+	public class Test_polls extends Test
 	{
 		private var pollObj:IMeetingObject, attendeeObj:IMeetingObject;
 		
-		public function Test25_polls()
+		public function Test_polls()
 		{
+			description = "Receive poll events";
+		}
+		
+		override protected function init():void {
 			var room:LiveRoom;
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();;

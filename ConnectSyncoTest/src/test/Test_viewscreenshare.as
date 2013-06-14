@@ -24,13 +24,17 @@ package test
 	import test.common.Test;
 	
 //	[SWF(backgroundColor="0x000000" , width="1024" , height="768")]
-	public class Test17_screenshare extends Test
+	public class Test_viewscreenshare extends Test
 	{
 		private var videoContainer:Sprite = new Sprite();
 		private static const VIDEO_WIDTH:int = 320,VIDEO_HEIGHT:int = 240;
 		
-		public function Test17_screenshare()
+		public function Test_viewscreenshare()
 		{
+			description = "View a screen shared from another computer";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var room:LiveRoom;
 			var sequence:Sequence = new Sequence();

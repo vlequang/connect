@@ -10,10 +10,14 @@ package test
 	
 	import test.common.Test;
 
-	public class Test18_syncosequencer extends Test
+	public class Test_syncosequencer extends Test
 	{
-		public function Test18_syncosequencer()
+		public function Test_syncosequencer()
 		{
+			description = "Test asynchronous sequencer";
+		}
+		
+		override protected function init():void {
 			var count:int = 0;
 			var sequence:ISequence = new com.synco.script.Sequence();//Sequence.create("sequence");
 			var func:Function;

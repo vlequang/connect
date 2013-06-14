@@ -17,7 +17,7 @@ package test
 	
 	import test.common.Test;
 	
-	[SWF(width="10",height="10")]
+//	[SWF(width="10",height="10")]
 	public class Test11_javascript_chat extends Test
 	{
 		private var chatMessages:Array = [];
@@ -25,14 +25,8 @@ package test
 		
 		public function Test11_javascript_chat()
 		{
-			ExternalInterface.addCallback("returnCommands", returnCommands);
-			ExternalInterface.call("function(movieName){var isIE = navigator.appName.indexOf('Microsoft') != -1; parent.flashObj = isIE ? window[movieName] : document[movieName]; parent.returnCommands = function(action,params) {parent.flashObj.returnCommands(action,params);};}",ExternalInterface.objectID);
-			ExternalInterface.call("(function(txt){if(!parent.chatbox)document.body.insertBefore(parent.chatbox=document.createElement('div'),document.body.firstChild);parent.chatbox.id='chatbox';parent.chatbox.style.position='absolute';})");
-			ExternalInterface.call("(function(txt){if(!parent.inputbox)parent.chatbox.insertBefore(parent.inputbox=document.createElement('input'),parent.chatbox.firstChild); parent.inputbox.type='text'; parent.inputbox.addEventListener('keydown',function(event){ var keyCode = ('which' in event) ? event.which : event.keyCode; if(keyCode==13) { returnCommands('chat',[parent.inputbox.value]) ;parent.inputbox.value='';}; return; },false);})");
-			ExternalInterface.call("(function(txt){if(!parent.msgbox)parent.chatbox.insertBefore(parent.msgbox=document.createElement('div'),parent.chatbox.firstChild);})");
-			ExternalInterface.call('function(){setInterval(function(){chatbox.style.top = document.body.scrollTop+window.innerHeight-chatbox.offsetHeight;},10)}');
 		}
-		
+
 		private function returnCommands(action:String,params:Array):void {
 			switch(action) {
 				case "chat":
@@ -43,6 +37,13 @@ package test
 		}
 
 		override protected function init():void {
+			ExternalInterface.addCallback("returnCommands", returnCommands);
+			ExternalInterface.call("function(movieName){var isIE = navigator.appName.indexOf('Microsoft') != -1; parent.flashObj = isIE ? window[movieName] : document[movieName]; parent.returnCommands = function(action,params) {parent.flashObj.returnCommands(action,params);};}",ExternalInterface.objectID);
+			ExternalInterface.call("(function(txt){if(!parent.chatbox)document.body.insertBefore(parent.chatbox=document.createElement('div'),document.body.firstChild);parent.chatbox.id='chatbox';parent.chatbox.style.position='absolute';})");
+			ExternalInterface.call("(function(txt){if(!parent.inputbox)parent.chatbox.insertBefore(parent.inputbox=document.createElement('input'),parent.chatbox.firstChild); parent.inputbox.type='text'; parent.inputbox.addEventListener('keydown',function(event){ var keyCode = ('which' in event) ? event.which : event.keyCode; if(keyCode==13) { returnCommands('chat',[parent.inputbox.value]) ;parent.inputbox.value='';}; return; },false);})");
+			ExternalInterface.call("(function(txt){if(!parent.msgbox)parent.chatbox.insertBefore(parent.msgbox=document.createElement('div'),parent.chatbox.firstChild);})");
+			ExternalInterface.call('function(){setInterval(function(){chatbox.style.top = document.body.scrollTop+window.innerHeight-chatbox.offsetHeight;},10)}');
+			
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
 			sequence.run(

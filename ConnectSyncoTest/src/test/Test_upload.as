@@ -6,12 +6,15 @@ package test
 	import com.adobe.connect.synco.results.SessionResult;
 	import com.adobe.connect.synco.results.URLLoaderResult;
 	import com.adobe.connect.synco.results.UserResult;
+	import com.adobe.connect.synco.results.XMLResult;
 	import com.synco.result.DataResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	import com.synco.utils.SyncoUtil;
 	
 	import flash.display.BitmapData;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
 	import flash.text.TextField;
 	import flash.utils.ByteArray;
@@ -22,12 +25,20 @@ package test
 	
 	import test.common.Test;
 
-	public class Test13_upload extends Test
+	public class Test_upload extends Test
 	{
-		public function Test13_upload()
+		static private const FILENAME:String = "testfile";
+		
+		public function Test_upload()
 		{
+			description = "Upload an image generated on the fly";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var scoID:String;
+			var gotSco:Function;
+			var myContentSco:String;
 			var sequence:Sequence = new Sequence();
 			sequence.run(
 				function():void {
@@ -51,12 +62,12 @@ package test
 				function(result:UserResult):void {
 					trace(sequence.step,JSON.stringify(result.user));
 					trace(sequence.step,"Check file content");
-					connect.contentManager.getScoID("ham",sequence.next);
+					connect.contentManager.getScoID(FILENAME,sequence.next);
 				},
 				function(result:DataResult):void {
 					trace(sequence.step,"Sco:",JSON.stringify(result));
 					if(result.success) {
-						sequence.jump(2);
+						sequence.jump(gotSco);
 						sequence.next(result);
 					}
 					else {
@@ -64,21 +75,30 @@ package test
 					}
 				},
 				function(result:Result=null):void {
-					connect.contentManager.createSco("922758257","ham","ham",sequence.next);
+					connect.callAPI({action:"sco-shortcuts"},sequence.next);
 				},
-				function(result:DataResult=null):void {
+				function(result:XMLResult):void {
+					myContentSco = result.xml.shortcuts.sco.(@type == "my-content").attribute("sco-id").toString();
+					connect.contentManager.createSco(myContentSco,FILENAME,FILENAME,sequence.next);
+				},
+				gotSco = function(result:DataResult=null):void {
 					trace(sequence.step,"ScoID:",result?result.text:"");
+					scoID = result.text;
 					var image:BitmapData = new BitmapData(250,160);
 					image.noise(123);
 					var tf:TextField = new TextField();
 					tf.filters = [new GlowFilter(0xFFFFFF,1,10,10,10)];
 					tf.text = new Date().toString();
 					image.draw(tf);
-					scoID = result.text;
 					var bytes:ByteArray = PNGEncoder.encode(image);
-					connect.contentManager.upload(scoID,"ham.png",bytes,sequence.next);
+					trace("<click to continue>");
+					addEventListener(MouseEvent.CLICK,
+						function(e:MouseEvent):void {
+							e.currentTarget.removeEventListener(e.type,arguments.callee);
+							connect.contentManager.upload(connect.session.url, scoID,"ham.png",bytes,sequence.next);
+						});
 				},
-				function(result:Result=null):void {
+				function(result:URLLoaderResult):void {
 					trace(sequence.step,"Uploaded");
 					sequence.next();
 				},

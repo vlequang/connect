@@ -19,6 +19,7 @@ package test
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.SyncEvent;
 	import flash.geom.Point;
 	import flash.media.Camera;
@@ -37,6 +38,10 @@ package test
 		private var camera:Camera;
 		public function Test_webcambroadcasting()
 		{
+			description = "Broadcast from a webcam";
+		}
+		
+		override protected function init():void {
 			addChild(videoContainer);
 			var connect:Connect;
 			var sequence:Sequence = new Sequence();
@@ -81,7 +86,15 @@ package test
 				function(result:MeetingObjectResult):void {
 					videoObject = result.meetingObject;
 					videoObject.sync = onSync;
-					videoObject.serverCall("createNewStream",[room.userID],sequence.next);
+					videoObject.serverCall("createNewStream",[room.userID],null);
+					addEventListener(MouseEvent.CLICK,sequence.next);
+				},
+				function(e:MouseEvent):void {
+					e.currentTarget.removeEventListener(e.type,sequence.currentCalls[0]);
+					stopSelfVideo();
+					videoStream.close();
+					removeChild(videoContainer);
+					validate();
 				}
 			);
 		}
@@ -104,7 +117,20 @@ package test
 				}
 			);
 		}
-		
+
+		private function stopSelfVideo():void {
+			var sequence:Sequence = new Sequence();
+			sequence.run(
+				function():void {
+					room.fetchMeetingStream(videoObject.data[room.userID].streamId,LiveStream.PUBLISH,sequence.next);
+				},
+				function(result:MeetingStreamResult):void {
+					var videoStream:IMeetingStream= result.stream;
+					videoStream.stream.attachCamera(null);
+				}
+			);
+		}
+
 		private function stopVideo(id:String):void {
 			trace("Stop video");
 			var video:Video = videoContainer.getChildByName("video"+id) as Video;

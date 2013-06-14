@@ -12,15 +12,19 @@ package test
 	
 	import test.common.Test;
 	
-	public class Test24_attendees extends Test
+	public class Test_layout extends Test
 	{
-		public function Test24_attendees()
+		public function Test_layout()
 		{
+			description = "View the layout of a meeting";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var room:LiveRoom;
+			var saveStateObj:IMeetingObject, layoutObj:IMeetingObject, 
+				activeLayout:Object;
 			var sequence:Sequence = new Sequence();
-			var attendees:IMeetingObject;
-			var activeLayout:Object;
 			sequence.run(
 				function():void {
 					trace(sequence.step,"fetch connect");
@@ -38,19 +42,29 @@ package test
 					connect.session.login(username,password,null,sequence.next);
 				},
 				function(result:Result):void {
-					trace(sequence.step,"Enter room");
+					trace(sequence.step,"enter room");
 					room = connect.getRoom(meetingroom);
 					room.enter(sequence.next);
 				},
 				function(result:Result):void {
-					trace(sequence.step,"Connected to",room.netConnection.uri);
-					room.fetchMeetingObject(null,PodType.ATTENDEES,null,sequence.next);
+					trace(sequence.step,"Fetch current layout");
+					room.fetchMeetingObject(null,PodType.LAYOUT_SAVEDSTATE,null,sequence.next);
 				},
 				function(result:MeetingObjectResult):void {
-					attendees = result.meetingObject;
-					trace(sequence.step,JSON.stringify(attendees.data,null,"\t"));
-					trace(sequence.step,"Self info:");
-					trace(sequence.step,JSON.stringify(attendees.data[room.userID],null,'\t'));
+					saveStateObj = result.meetingObject;
+					trace(sequence.step,JSON.stringify(result.meetingObject.data,null,'\t'));
+					trace(sequence.step,"Fetch layout information");
+					room.fetchMeetingObject(null,PodType.LAYOUT_LAYOUT,null,sequence.next);
+				},
+				function(result:MeetingObjectResult):void {
+					layoutObj = result.meetingObject;
+					trace(sequence.step,"Show active layout");
+					activeLayout = layoutObj.data[saveStateObj.data.roomLayoutID];
+					trace(sequence.step,JSON.stringify(activeLayout,null,'\t'));
+					room.fetchMeetingObject(null,PodType.PODS,null,sequence.next);
+				},
+				function(result:MeetingObjectResult):void {
+					trace(sequence.step,JSON.stringify(result.meetingObject.data,null,"\t"));
 					trace(sequence.step,"done");
 					validate();
 				}

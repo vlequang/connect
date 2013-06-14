@@ -24,10 +24,14 @@ package test
 	import test.common.Test;
 	
 //	[SWF(backgroundColor="0x000000" , width="1024" , height="768")]
-	public class Test21_presentershare extends Test
+	public class Test_presentershare extends Test
 	{
-		public function Test21_presentershare()
+		public function Test_presentershare()
 		{
+			description = "List presenter information";
+		}
+		
+		override protected function init():void {
 			var connect:Connect;
 			var room:LiveRoom;
 			var sequence:Sequence = new Sequence();

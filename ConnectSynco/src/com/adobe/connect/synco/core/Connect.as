@@ -11,6 +11,7 @@ package com.adobe.connect.synco.core
 	import com.adobe.connect.synco.results.RoomsResult;
 	import com.adobe.connect.synco.results.SessionResult;
 	import com.adobe.connect.synco.results.URLLoaderResult;
+	import com.adobe.connect.synco.results.XMLResult;
 	import com.synco.result.DataResult;
 	import com.synco.script.Sequence;
 	import com.synco.utils.SyncoUtil;
@@ -59,8 +60,7 @@ package com.adobe.connect.synco.core
 				function(result:SessionResult):void {
 					HTTPLoader.get(session.url+"/api/xml",
 						{
-							action:"report-my-meetings",
-							session: result.sessionID
+							action:"report-my-meetings"
 						},
 						function(result:URLLoaderResult):void {
 							var xml:XML = new XML(result.text);
@@ -69,6 +69,22 @@ package com.adobe.connect.synco.core
 								rooms.push(meeting["url-path"].toString().split("/")[1]);
 							}
 							callback(new RoomsResult(rooms));
+						});
+				});
+		}
+		
+		public function callAPI(params:Object,callback:Function):void {
+			var sequence:Sequence = new Sequence();
+			sequence.run(
+				function():void {
+					session.fetchSession(sequence.next);
+				},
+				function(result:SessionResult):void {
+					HTTPLoader.get(session.url+"/api/xml",
+						params,
+						function(result:URLLoaderResult):void {
+							var xml:XML = new XML(result.text);
+							callback(new XMLResult(xml));
 						});
 				});
 		}

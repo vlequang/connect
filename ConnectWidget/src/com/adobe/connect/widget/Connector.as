@@ -14,11 +14,12 @@ package com.adobe.connect.widget
 	public class Connector extends EventDispatcher
 	{
 		private var meetingURL:String;
-		private var liveRoom:LiveRoom, connectCore:Connect;
+		private var connectCore:Connect;
+		public var liveRoom:LiveRoom;
+		private var modules:Object = {};
+		public var connected:Boolean;
 		
-		private var _chat:ChatModule;
-		
-		public function connect(url:String,room:String,guestName:String):void
+		public function connect(url:String,room:String,guestName:String,password:String=null):void
 		{
 			meetingURL = url;
 			var sequence:Sequence = new Sequence();
@@ -31,23 +32,22 @@ package com.adobe.connect.widget
 					trace(sequence.step,"Connect Version:",result.version);
 					connectCore = result.connect;
 					liveRoom = connectCore.getRoom(room);
-					liveRoom.enterAsGuest(guestName,sequence.next);
+					if(!password) {
+						liveRoom.enterAsGuest(guestName,sequence.next);
+					}
+					else {
+						liveRoom.enterLogin(guestName,password,sequence.next);
+					}
 				},
 				function(result:ConnectionResult):void {
+					connected = true;
 					dispatchEvent(new Event(Event.CONNECT));
 				}
 			);
 		}
 		
-		private function ensureConnection():void {
-			if(!liveRoom) {
-				throw new Error("Not connected");
-			}
-		}
-		
 		public function get chat():ChatModule {
-			ensureConnection();
-			return _chat || (_chat = new ChatModule(liveRoom));
+			return modules.chat || (modules.chat = new ChatModule(this));
 		}
 	}
 }

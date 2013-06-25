@@ -17,6 +17,7 @@ package com.adobe.connect.synco.live
 	import com.synco.utils.SyncoUtil;
 	
 	import flash.events.Event;
+	import flash.events.NetStatusEvent;
 	import flash.events.SyncEvent;
 	import flash.events.TimerEvent;
 	import flash.net.NetConnection;
@@ -52,7 +53,7 @@ package com.adobe.connect.synco.live
 					if(passcode) {
 						options["meeting-passcode"] = passcode;
 					}
-					ConnectionFetch.getConnection(session.url+"/"+room,result.sessionID,options,sequence.next);
+					ConnectionFetch.getConnection(session.url+"/"+room,null,options,sequence.next);
 				},
 				function(result:ConnectionResult):void {
 					onConnectionFetched(result.netConnection,result.loginInfo,result.ticket);
@@ -60,6 +61,17 @@ package com.adobe.connect.synco.live
 						callback(result);
 				}
 			);
+		}
+
+		public function enterLogin(username:String,password:String,callback:Function=null):void {
+			var sequence:Sequence = new Sequence();
+			sequence.run(
+				function():void {
+					session.login(username,password,null,sequence.next);
+				},
+				function(result:Result):void {
+					enter(callback);
+				});
 		}
 
 		public function enterAsGuest(guestName:String,callback:Function=null):void {
@@ -87,6 +99,13 @@ package com.adobe.connect.synco.live
 			this.loginInfo = loginInfo;
 			this.netConnection = netConnection;
 			this.ticket = ticket;
+			
+			if(this.netConnection)
+				this.netConnection.addEventListener(NetStatusEvent.NET_STATUS,onNetStatus);
+		}
+		
+		private function onNetStatus(e:NetStatusEvent):void {
+			trace(e.info.code);
 		}
 		
 		public function get userName():String {
@@ -154,7 +173,7 @@ package com.adobe.connect.synco.live
 			var sequence:Sequence = new Sequence();
 			var contentDB:IMeetingObject,content:IMeetingObject;
 			sequence.run(
-				function(result:Result):void {
+				function():void {
 					fetchMeetingObject(null,PodType.CONTENTDB,null,sequence.next);
 				},
 				function(result:MeetingObjectResult):void {

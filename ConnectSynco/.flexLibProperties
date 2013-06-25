@@ -33,6 +33,7 @@
     <classEntry path="com.adobe.connect.synco.graphics.WhiteboardUtil"/>
     <classEntry path="com.adobe.connect.synco.graphics.WhiteboardShape"/>
     <classEntry path="com.adobe.connect.synco.utils.CustomPodUtil"/>
+    <classEntry path="com.adobe.connect.synco.results.XMLResult"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

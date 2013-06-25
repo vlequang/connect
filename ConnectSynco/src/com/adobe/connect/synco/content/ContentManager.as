@@ -76,24 +76,12 @@ package com.adobe.connect.synco.content
 			);
 		}
 		
-		public function upload(scoID:String,filename:String,bytes:ByteArray,callback:Function):void {
-			var sequence:Sequence = new Sequence();
-			sequence.run(
-				function():void {
-					session.fetchSession(sequence.next);
-				},
-				function(result:SessionResult):void {
-					HTTPLoader.upload(session.url+"/api/xml", {
-						action: "sco-upload",
-						"sco-id": scoID,
-						session: result.sessionID
-					}, filename, bytes,
-					sequence.next);
-				},
-				function(result:URLLoaderResult):void {
-					callback(result);
-				}
-			);
+		public function upload(url:String,scoID:String,filename:String,bytes:ByteArray,callback:Function):void {
+			HTTPLoader.upload(session.url+"/api/xml", {
+				action: "sco-upload",
+				"sco-id": scoID
+			}, filename, bytes,
+			callback);
 		}
 		
 		public function getScoStatus(scoID:String,callback:Function):void {

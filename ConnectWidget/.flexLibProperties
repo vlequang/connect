@@ -5,6 +5,8 @@
     <classEntry path="com.adobe.connect.widget.events.ConnectorEvent"/>
     <classEntry path="com.adobe.connect.widget.chat.ChatModule"/>
     <classEntry path="com.adobe.connect.widget.chat.IChatReceiver"/>
+    <classEntry path="com.adobe.connect.widget.user.UserModule"/>
+    <classEntry path="com.adobe.connect.widget.core.Module"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

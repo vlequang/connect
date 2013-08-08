@@ -11,7 +11,6 @@ package test
 	import com.adobe.connect.synco.results.MeetingStreamResult;
 	import com.adobe.connect.synco.results.SessionResult;
 	import com.adobe.connect.synco.results.UserResult;
-	import com.synco.result.DataResult;
 	import com.synco.script.Result;
 	import com.synco.script.Sequence;
 	
@@ -19,7 +18,6 @@ package test
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.events.SyncEvent;
-	import flash.geom.Point;
 	import flash.media.Video;
 	
 	import test.common.Test;
@@ -31,7 +29,7 @@ package test
 		private var videoStream:IMeetingStream;
 		private var videoObject:IMeetingObject;
 		private var netStreams:Object ={};
-		private var videoContainer = new Sprite();
+		private var videoContainer:Sprite = new Sprite();
 		public function Test_video()
 		{
 			description = "View video pod";

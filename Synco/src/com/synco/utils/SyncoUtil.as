@@ -26,7 +26,11 @@ package com.synco.utils
 		
 		//****************	ASYNCHRONOUS CALLS ******************
 		static public function callAsync(call:Function,params:Array=null):void {
-			instance.callAsync(call,params);
+			instance.callAsync(call,params,false);
+		}
+		
+		static public function callAsyncOnce(call:Function,params:Array=null):void {
+			instance.callAsync(call,params,true);
 		}
 
 		static public function waitAndCall(time:int,call:Function,params:Array=null):void {
@@ -37,9 +41,16 @@ package com.synco.utils
 				},time,params);
 		}
 		/////// private
-		private function callAsync(call:Function,params:Array):void {
+		private function callAsync(call:Function,params:Array,once:Boolean):void {
 			if(call==null)
 				throw new ArgumentError();
+			if(once) {
+				for each(var pair:Array in calls) {
+					if(pair[0]==call) {
+						return;
+					}
+				}
+			}
 			calls.push([call,params]);
 			timer.start();
 		}

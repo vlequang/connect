@@ -24,6 +24,7 @@ package com.adobe.connect.synco.core
 		static public const ATTENDEES:String = "ATTENDEES";
 		static public const POLLQUESTIONS:String = "POLLQUESTIONS";
 		static public const RECORDING:String = "RECORDING";
+		static public const TELEPHONY:String = "TELEPHONY";
 		
 		static public const preference:Object = {};
 		static private const runOnce:* = setPreferences();
@@ -51,6 +52,7 @@ package com.adobe.connect.synco.core
 			preference[ATTENDEES] =			["presenters/all/gShell_users",false,false];
 			preference[POLLQUESTIONS] =		["public/all/%1_Question",true,false];
 			preference[RECORDING] = 		["presenters/all/recorderUi",true,false];
+			preference[TELEPHONY] = 		["presenters/all/telephonyConference",false,false];
 		}
 		
 		static public function getSharedObjectName(id:String,type:String,params:Array=null):String {

@@ -298,7 +298,7 @@ package com.adobe.connect.synco.live
 			if(callback!=null) {
 				responder = new DataResultResponder(callback);
 			}
-			netConnection.call.apply(null,[type,responder,action].concat(params));
+			netConnection.call(type,responder,action,params);
 		}
 		
 		public function leave():void {

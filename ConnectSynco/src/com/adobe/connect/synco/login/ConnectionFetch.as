@@ -113,6 +113,10 @@ package com.adobe.connect.synco.login
 					netConnection.call("roomMgrCall", null, "requestEntry");		
 					timer.stop();
 				}
+				else if(obj.hasOwnProperty('command') && obj.command=="guestsNoLongerAllowed") {
+					netConnection.call("roomMgrCall", null, "requestEntry");		
+					timer.stop();					
+				}
 				else if(obj is TimerEvent) {
 					if(!tryNewConnection()) {
 						failConnection(netConnection);

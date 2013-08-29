@@ -5,6 +5,7 @@ package
 	import com.adobe.connect.synco.interfaces.IMeetingObject;
 	import com.adobe.connect.synco.live.LiveRoom;
 	import com.adobe.connect.synco.results.ConnectResult;
+	import com.adobe.connect.synco.results.ConnectionResult;
 	import com.adobe.connect.synco.results.MeetingObjectResult;
 	import com.adobe.connect.synco.results.SessionResult;
 	import com.adobe.connect.synco.results.UserResult;
@@ -37,9 +38,9 @@ package
 		protected var meetingroom:String = "testroom";
 		
 		private var entrymessage:String = "";
+		private var phonenumber:String = "";
 		private var time:String = new Date().toLocaleString();;
 		
-		private var attendees:IMeetingObject;
 		private var activated:Boolean;
 		
 		private var timer:Timer = new Timer(1000);
@@ -47,7 +48,10 @@ package
 		
 		
 		private var room:LiveRoom;
+		private var attendees:IMeetingObject;
 		private var chatObj:IMeetingObject;
+		private var telephony:IMeetingObject;
+		private var connect:Connect,loginInfo:Object;
 		
 		public function ConnectFakeAttendee()
 		{
@@ -65,49 +69,86 @@ package
 			if(so.data.meetingroom) {
 				meetingroom = so.data.meetingroom;
 			}
+			if(so.data.entrymessage) {
+				entrymessage = so.data.entrymessage;
+			}
+			if(so.data.phonenumber) {
+				phonenumber = so.data.phonenumber;
+			}
 			opaqueBackground = 0xEEEEEE;
 			addChild(loginScreen);
-			var tf:TextField, bottomY:int=2;
+			var tf:TextField, bottomY:int=2, marginX:int = 100;
+			
+			tf = new TextField();
+			tf.text = "Server:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
+			
 			tf = new TextField();
 			tf.name = "domain";
 			tf.text = domain;
 			tf.type = TextFieldType.INPUT;
-			tf.width = stage.stageWidth;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
 			tf.height = 16;
 			tf.y = bottomY+2;
 			tf.border = true;
 			bottomY = tf.y+tf.height;
 			loginScreen.addChild(tf);
 			tf.addEventListener(Event.CHANGE,onChange);
+			
+			tf = new TextField();
+			tf.text = "Room:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
+			
 			tf = new TextField();
 			tf.name = "meetingroom";
 			tf.text = meetingroom;
 			tf.type = TextFieldType.INPUT;
-			tf.width = stage.stageWidth;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
 			tf.height = 16;
 			tf.y = bottomY+2;
 			tf.border = true;
 			bottomY = tf.y+tf.height;
 			loginScreen.addChild(tf);
 			tf.addEventListener(Event.CHANGE,onChange);
+			
+			tf = new TextField();
+			tf.text = "Username:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
+			
 			tf = new TextField();
 			tf.name = "username";
 			tf.text = username;
 			tf.type = TextFieldType.INPUT;
-			tf.width = stage.stageWidth;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
 			tf.height = 16;
 			tf.y = bottomY+2;
 			tf.border = true;
 			bottomY = tf.y+tf.height;
 			loginScreen.addChild(tf);
 			tf.addEventListener(Event.CHANGE,onChange);
+			
+			tf = new TextField();
+			tf.text = "Password:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
 			
 			tf = new TextField();
 			tf.name = "password";
 			tf.text = password;
 			tf.displayAsPassword = true;
 			tf.type = TextFieldType.INPUT;
-			tf.width = stage.stageWidth;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
 			tf.height = 16;
 			tf.y = bottomY+2;
 			tf.border = true;
@@ -116,10 +157,17 @@ package
 			tf.addEventListener(Event.CHANGE,onChange);
 			
 			tf = new TextField();
+			tf.text = "Time to join:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
+						
+			tf = new TextField();
 			tf.name = "time";
-			tf.text = new Date().toLocaleString();
+			tf.text = new Date(new Date().time+1000*10).toLocaleString();
 			tf.type = TextFieldType.INPUT;
-			tf.width = stage.stageWidth;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
 			tf.height = 16;
 			tf.y = bottomY+2;
 			tf.border = true;
@@ -128,10 +176,39 @@ package
 			loginScreen.addChild(tf);
 			
 			tf = new TextField();
+			tf.text = "Entry message:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
+			
+			
+			tf = new TextField();
 			tf.name = "entrymessage";
-			tf.text = "Need to do something. BRB";
+			tf.text = entrymessage;
 			tf.type = TextFieldType.INPUT;
-			tf.width = stage.stageWidth;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
+			tf.height = 16;
+			tf.y = bottomY+2;
+			tf.border = true;
+			bottomY = tf.y+tf.height;
+			loginScreen.addChild(tf);
+			tf.addEventListener(Event.CHANGE,onChange);	
+			
+			
+			tf = new TextField();
+			tf.text = "My phone number:";
+			tf.mouseEnabled = false;
+			tf.y = bottomY+2;
+			loginScreen.addChild(tf);
+			
+			
+			tf = new TextField();
+			tf.name = "phonenumber";
+			tf.text = phonenumber;
+			tf.type = TextFieldType.INPUT;
+			tf.x = marginX;
+			tf.width = stage.stageWidth - tf.x;
 			tf.height = 16;
 			tf.y = bottomY+2;
 			tf.border = true;
@@ -179,7 +256,7 @@ package
 		}
 		
 		private function enter():void {
-			connect(domain,meetingroom,username,password);
+			enterMeetingRoom(domain,meetingroom,username,password);
 		}
 		
 		private function onFocusOut(e:FocusEvent):void {
@@ -199,7 +276,7 @@ package
 			var tf:TextField = (loginScreen.getChildByName("start") as TextField);
 			tf.htmlText = activated ? 
 				"<a href='event:start'>[ STOP ]</a> " + formatTime(timeLeft()) 
-				: "<a href='event:start'>[ START ]</a> " + (timeLeft()>0?"":" - <font color='#cc0000'>Meeting Time must be in the future</font>");
+				: "<a href='event:start'>[ START ]</a> " + (timeLeft()>0?formatTime(timeLeft()):" - <font color='#cc0000'>Meeting Time must be in the future</font>");
 		}
 		
 		private function formatTime(time:Number):String {
@@ -234,6 +311,7 @@ package
 			username = (loginScreen.getChildByName("username") as TextField).text;
 			password = (loginScreen.getChildByName("password") as TextField).text;
 			entrymessage = (loginScreen.getChildByName("entrymessage") as TextField).text;
+			phonenumber = (loginScreen.getChildByName("phonenumber") as TextField).text;
 			
 			var so:SharedObject = SharedObject.getLocal("syncotester");
 			if(so.data.domain != domain)
@@ -246,14 +324,15 @@ package
 				so.setProperty("password",password);
 			if(so.data.entrymessage != entrymessage)
 				so.setProperty("entrymessage",entrymessage);
+			if(so.data.phonenumber != phonenumber)
+				so.setProperty("phonenumber",phonenumber);
 		}
 		
 		private function get chatbox():TextField {
 			return (loginScreen.getChildByName("chat") as TextField);
 		}
 		
-		private function connect(domain:String,meetingroom:String,username:String,password:String):void {
-			var connect:Connect;
+		private function enterMeetingRoom(domain:String,meetingroom:String,username:String,password:String):void {
 			var sequence:Sequence = new Sequence();
 			sequence.run(
 				function():void {
@@ -279,7 +358,8 @@ package
 					room = connect.getRoom(meetingroom);
 					room.enter(sequence.next);
 				},
-				function(result:Result):void {
+				function(result:ConnectionResult):void {
+					loginInfo = result.loginInfo;
 					chatbox.appendText("Room "+meetingroom+" entered"+"\n");
 					room.fetchActivePods("FtChat",sequence.next);
 				},
@@ -292,7 +372,9 @@ package
 					chatObj.addCallback("message",receiveMessage);
 					
 					setTimeout(sendFakeMessage,8000+Math.random()*4000);
-					
+					if(phonenumber.length) {
+						room.fetchMeetingObject(null,PodType.TELEPHONY,null,onTelephony,true);
+					}
 					room.fetchMeetingObject(null,PodType.ATTENDEES,null,sequence.next,true);
 				},
 				function(result:MeetingObjectResult):void {
@@ -310,13 +392,37 @@ package
 				function():void {
 					chatbox.appendText("Bye Bye!"+"\n");
 					room.leave();
-					connect.session.logout(null,sequence.next);
 				}
 			);
 		}
 		
+		private function onTelephony(result:MeetingObjectResult):void {
+			telephony = result.meetingObject;
+			trace(JSON.stringify(telephony.data));
+			if(telephony.data.isStarted) {
+				callNumber();
+			}
+			else if(loginInfo.role=="owner") {
+				startConference();
+			}
+		}
+		
+		private function callNumber():void {
+			var number:String = "";
+			for(var i:int=0;i<phonenumber.length;i++) {
+				var digit:Number = parseFloat(phonenumber.charAt(i));
+				if(!isNaN(digit))
+					number += digit;
+			}
+			room.serverCall("conferenceCall","dialUser",[parseFloat(room.userID),number,false]);
+		}
+		
+		private function startConference():void {
+			room.serverCall("conferenceCall","startConference",[]);
+		}
+		
 		private function sendFakeMessage():void {
-			if((loginScreen.getChildByName("entrymessage") as TextField).text.length)
+			if(entrymessage.length)
 				chatObj.serverCall("sendMessage",[0,(loginScreen.getChildByName("entrymessage") as TextField).text,-1,'Black',-1]);
 		}
 		

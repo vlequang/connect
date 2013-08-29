@@ -11,10 +11,10 @@ package com.synco.utils
 	 **/
 	public class SyncoUtil
 	{
-		static protected var instance:SyncoUtil = new SyncoUtil();
+		static public var instance:SyncoUtil = new SyncoUtil();
 		
-		private var calls:Array = [];
-		private var timer:Timer = new Timer(0,1);
+		public var calls:Array = [];
+		public var timer:Timer = new Timer(0,1);
 
 		function SyncoUtil():void {
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE,onTimerComplete);
@@ -42,8 +42,9 @@ package com.synco.utils
 		}
 		/////// private
 		private function callAsync(call:Function,params:Array,once:Boolean):void {
-			if(call==null)
+			if(call==null) {
 				throw new ArgumentError();
+			}
 			if(once) {
 				for each(var pair:Array in calls) {
 					if(pair[0]==call) {

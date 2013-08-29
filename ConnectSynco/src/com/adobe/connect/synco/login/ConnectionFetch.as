@@ -100,6 +100,19 @@ package com.adobe.connect.synco.login
 						failConnection(netConnection);
 					}
 				}
+				else if(obj.hasOwnProperty('command') && obj.command=="namedOrganizerViewer") {
+					timer.stop();
+				}
+				else if(obj.hasOwnProperty('command') && obj.command=="wait") {
+					timer.stop();
+				}
+				else if(obj.hasOwnProperty('command') && obj.command=="onHold") {
+					timer.stop();
+				}
+				else if(obj.hasOwnProperty('command') && obj.command=="blocked") {
+					netConnection.call("roomMgrCall", null, "requestEntry");		
+					timer.stop();
+				}
 				else if(obj is TimerEvent) {
 					if(!tryNewConnection()) {
 						failConnection(netConnection);
